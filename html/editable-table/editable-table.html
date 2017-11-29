@@ -2,9 +2,315 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>editable table</title>
+    <link rel="stylesheet" href="../../easyui/themes/icon.css">
+    <link rel="stylesheet" href="../../easyui/themes/default/easyui.css">
+    <script type="text/javascript" src="../../easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../../easyui/jquery.easyui.min.js"></script>
 </head>
-<body>
+<body style="background-color: #F2F2F2;">
+<div class="content-wrap" style='width:100%;background-color: #F2F2F2;'>
+    <div class="left-wrap" style="width: 45%;float: left;">
+        <div class="search-wrap" style="width: 100%;height: 80px;margin-left: 15px;margin-top: 20px;">
+            <form action="" method="post">
+                <table style="padding-top: 10px;" class="">
+                    <tr>
+                        <td colspan="3"><input class="easyui-textbox"
+                                               style="width:260px; height: 28px; border-radius: 3px; border: none; font-size: 18px;">
+                        </td>
+                        <td><a class="easyui-linkbutton"
+                               style="width: 78px; height: 28px; float: left;margin-left:10px;"
+                               data-options="iconCls:'icon-search'">查找 </a></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div class="table-wrap" style="width: 80%;margin-left: 15px;">
+            <table id="all-goods1" class="easyui-datagrid" title="商品列表" style="height:auto">
+                <thead>
+                <tr>
+                    <th data-options="field:'goodsName',width:100,align:'center'">商品名称</th>
+                    <th data-options="field:'goodsNorms',width:80,align:'center'">规格</th>
+                    <th data-options="field:'goodsUnit',align:'center',width:50">单位</th>
+                    <th data-options="field:'barCode',align:'center',width:100">条码</th>
+                    <th data-options="field:'originalPrice',width:80,align:'center'">单价</th>
+                    <th data-options="field:'supplyName',width:100,align:'center'">生产企业</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="right-wrap" style="width:50%;float: left;margin-left: 1px;">
+        <div style="height: 50px;"></div>
+        <!-- 结算弹窗 -->
+        <div class="" style="width:100%;height: 300px;margin-left: 15px;">
+            <div class="title-wrap" style="height: 30px;">
+                <h3 style="float: left;font-size: 20px;margin: 10px;color:#02786c;font-size:14px;">已选择商品(双击编辑):</h3>
+            </div>
+            <div class="selected-goods" style="width: 100%;height:300px;">
+                <table id="selected-list1" class="easyui-datagrid" style="width:100%;height:300px;">
+                    <thead>
+                    <tr>
+                        <th data-options="field:'ck',checkbox:true"></th>
+                        <th data-options="field:'barCode',align:'center',width:120,align:'center'">条码</th>
+                        <th data-options="field:'goodsName',width:80,align:'center'">商品名称</th>
+                        <th data-options="field:'goodsNorms',width:60,align:'center'">规格</th>
+                        <th data-options="field:'goodsUnit',width:50,align:'center'">单位</th>
+                        <th data-options="field:'amount',align:'center',width:50,editor:{
+                            type:'numberbox',
+                            options:{
+                                requirded:true,
+                                precision:0,
+                                min:1
+                            }
+                        }">数量
+                        </th>
+                        <th data-options="field:'originalPrice',align:'center',width:80">原价</th>
+                        <th data-options="field:'discount',align:'center',width:80,editor:{
+                            type:'numberbox',
+                            options:{
+                                requirded:true,
+                                precision:2,
+                                min:0.01,
+                                max:1
+                            }
+                        }">折扣
+                        </th>
+                        <th data-options="field:'currentPrice',align:'center',width:80, formatter:function(val,rowData,rowIndex){
+        if(val!=null)
+            return val.toFixed(2);
+   }">实价
+                        </th>
+                        <th data-options="field:'subTotal',align:'center',width:100,formatter:function(val,rowData,rowIndex){
+        if(val!=null)
+            return val.toFixed(2);
+   }">小计
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+                <div id="tb-commit1" style="height: auto">
+                    <a href="javascript:void(0)" class="easyui-linkbutton"
+                       data-options="iconCls:'icon-cancel',plain:true" onclick="deleteSelectedRows();">删除</a>
+                </div>
+            </div>
+            <div class="bottom-wrap" style="height: 50px;width: 100%">
+                <div style="width: 60%;height:50px;float: left">
+                    <!--统计信息-->
+                    <div id="sub-info1"
+                         style="width: 400px;height: 30px;margin-top: 10px;margin-left:30px;padding-top:5px;font-size: 15px;"></div>
+                </div>
+                <div style="width:100%;heigth:10px;"></div>
+                <div
+                        style="height: 50px; width: 40%; float: left; padding-top: 10px">
+                    <a href="javascript:void(0);" class="easyui-linkbutton"
+                       style="width: 78px; height: 28px; margin-left: 10px;float:right;margin-top:10px;">打印</a> <a
+                        href="javascript:void(0);" class="easyui-linkbutton"
+                        style="width: 78px; height: 28px;margin-left:10px;float:right;margin-top:10px;">挂单</a> <a
+                        href="javascript:void(0);" class="easyui-linkbutton"
+                        style="width: 78px; height: 28px;float:right;margin-top:10px;" onclick="openWindow();">结账</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<script>
+    var originalPrice;
+    var discount;
+    var currentPrice;
+    var subTotal;
+    var totalMoney = 0;
+    var totalAmount;
+    var selectedArray = [];
+    var editIndex = undefined;
+    var lastIndex;
+    //差额
+    var result = 0;
+    var discountMoney;
+    var totalCost;
+    var cash;
+
+    //查询结果
+    $("#all-goods1").datagrid({
+        url: '../../datas/goodsSale.json',
+        singleSelect: true,
+        pagination: true,
+        onDblClickRow: addRow,
+        fitColumns: true//宽度自适应
+    })
+
+    //已添加条目
+    $("#selected-list1").datagrid({
+        toolbar: '#tb-commit1',
+        singleSelect: false,
+        method: 'get',
+        fitColumns: true,//宽度自适应
+        /*双击编辑表格*/
+        onDblClickRow: function (rowIndex) {
+            if (rowIndex !== '') {
+                $(this).datagrid('beginEdit', rowIndex);
+            }
+            /*换行,旧lastIndex,新rowIndex*/
+            if (lastIndex != rowIndex) {
+                $(this).datagrid('endEdit', lastIndex);
+                $(this).datagrid('beginEdit', rowIndex);
+                lastIndex = rowIndex;
+            }
+        },
+        /*单击结束编辑*/
+        onClickRow: function (rowIndex) {
+            $(this).datagrid('endEdit', lastIndex);
+            $(this).datagrid('endEdit', rowIndex);
+        },
+        /*计算*/
+        onBeginEdit: function (rowIndex, row) {
+            var editors = $('#selected-list1').datagrid('getEditors', rowIndex);
+            //数量
+            var _amt = $(editors[0].target);
+            //折扣
+            var _dc = $(editors[1].target);
+            //原价
+            var _op = row.originalPrice;
+            _amt.add(_dc).numberbox({
+                onChange: function () {
+                    var dc = _dc.numberbox('getValue');
+                    var amt = _amt.numberbox('getValue');
+                    row.currentPrice = _op * dc;
+                    row.subTotal = _op * dc * amt;
+                }
+            })
+        },
+        /*小计*/
+        onAfterEdit: function (rowIndex) {
+            $(this).datagrid('endEdit', lastIndex);
+            $(this).datagrid('endEdit', rowIndex);
+            getTotal();
+            updateSubInfo();
+        }
+    })
+    /*分页*/
+    function pagerFilter(data) {
+        if (typeof data.length == 'number' && typeof data.splice == 'function') {
+            data = {
+                total: data.length,
+                rows: data
+            }
+        }
+        var dg = $(this);
+        var opts = dg.datagrid('options');
+        var pager = dg.datagrid('getPager');
+        pager.pagination({
+            pageList: [10, 15, 20],
+            onSelectPage: function (pageNum, pageSize) {
+                opts.pageNumber = pageNum;
+                opts.pageSize = pageSize;
+                pager.pagination('refresh', {
+                    pageNumber: pageNum,
+                    pageSize: pageSize
+                });
+                dg.datagrid('loadData', data);
+            }
+        });
+        if (!data.originalRows) {
+            data.originalRows = (data.rows);
+        }
+        var start = (opts.pageNumber - 1) * parseInt(opts.pageSize);
+        var end = start + parseInt(opts.pageSize);
+        data.rows = (data.originalRows.slice(start, end));
+        return data;
+    }
+
+    /*$('#dg').datagrid({loadFilter:pagerFilter}).datagrid('loadData',getData());*/
+    $(function () {
+        $('#all-goods1').datagrid({loadFilter: pagerFilter});
+    });
+
+    function addRow(index, row) {
+        var length = selectedArray.length;
+        var code = row.barCode;
+        if (selectedArray.indexOf(code) === -1) {
+            selectedArray.push(code);
+        } else {
+            alert('该商品已添加过!')
+            return false;
+        }
+        row.amount = 1;
+        originalPrice = row.originalPrice;
+        discount = 0.8;
+        currentPrice = originalPrice * discount;
+        subTotal = currentPrice * 1;
+        var barCode = row.barCode;
+        $("#selected-list1").datagrid('appendRow', {
+            barCode: row.barCode,
+            goodsName: row.goodsName,
+            goodsNorms: row.goodsNorms,
+            goodsUnit: row.goodsUnit,
+            amount: row.amount,
+            discount: discount,
+            originalPrice: row.originalPrice,
+            currentPrice: currentPrice,
+            subTotal: subTotal
+        });
+        getTotalRows();
+        getTotal();
+        updateSubInfo();
+    }
+
+    /*总条目数量*/
+    function getTotalRows() {
+        var data = $("#selected-list1").datagrid('getData');
+        totalAmount = data.total;
+    }
+
+    /*总价*/
+    function getTotal() {
+        totalMoney = 0;
+        var rows = $('#selected-list1').datagrid('getRows');
+        for (var i = 0; i < rows.length; i++) {
+            totalMoney += parseFloat(rows[i].subTotal);
+        }
+        totalMoney = totalMoney.toFixed(2);
+    }
+    /*已选条目数组*/
+    function removeByValue(arr, val) {
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i] == val) {
+                arr.splice(i, 1);
+                return;
+            }
+        }
+    }
+    /*更新提示信息*/
+    function updateSubInfo() {
+        $("#sub-info1").html('共选择了 ' + '<b style="color: red">' + totalAmount + '</b> 件商品,总计 ' + '<b style="color: red">' + totalMoney + '</b> 元');
+    }
+
+    /*datagrid编辑*/
+    /*删除所选*/
+    function deleteSelectedRows() {
+        var deletedData = $('#selected-list1').datagrid('getChecked');
+        /*  alert(deletedData);*/
+        for (var i = deletedData.length - 1; i >= 0; i--) {
+            var rowIndex = $('#selected-list1').datagrid('getRowIndex', deletedData[i]);
+            $('#selected-list1').datagrid('deleteRow', rowIndex);
+            editIndex = undefined;
+            //删除表格数据同时删除掉已选条目数组内容
+            removeByValue(selectedArray, deletedData[i].barCode);
+        }
+        getTotalRows();
+        getTotal();
+        updateSubInfo();
+    }
+
+    function openWindow() {
+        alert('结账')
+        //自适应宽高
+      /*  var x = screen.width / 2 - 400;
+        var y = screen.height / 2 - 260;
+        var w = window.open('payment.jsp?totalMoney=' + totalMoney, 'winName', 'location=0,width=800,height=520,left=' + x + ',top=' + y);
+        w.focus();*/
+    }
+</script>
 </body>
 </html>

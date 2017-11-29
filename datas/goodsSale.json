@@ -1,0 +1,18 @@
+{
+  "total":"13",
+  "rows":[
+    {"goodsName":"aaa","goodsNorms":"300g","goodsUnit":"a","barCode":"1231234","originalPrice":"66.2","discount":"0.8","supplyName":"12123"},
+    {"goodsName":"bbb","goodsNorms":"1500g","goodsUnit":"a","barCode":"12123222","originalPrice":"55","discount":"0.8","supplyName":"21323"},
+    {"goodsName":"ccc","goodsNorms":"1500g","goodsUnit":"a","barCode":"4545412354","originalPrice":"66","discount":"0.7","supplyName":"55355"},
+    {"goodsName":"ddd","goodsNorms":"1500g","goodsUnit":"a","barCode":"123345456","originalPrice":"200","discount":"0.8","supplyName":"86556"},
+    {"goodsName":"eee","goodsNorms":"1500g","goodsUnit":"a","barCode":"1234453556","originalPrice":"235","discount":"0.8","supplyName":"4568768"},
+    {"goodsName":"fff","goodsNorms":"123213","goodsUnit":"a","barCode":"12345354456","originalPrice":"248","discount":"0.8","supplyName":"865435"},
+    {"goodsName":"ggg","goodsNorms":"500g","goodsUnit":"a","barCode":"123454354356","originalPrice":"155","discount":"0.6","supplyName":"533873"},
+    {"goodsName":"hhh","goodsNorms":"500g","goodsUnit":"a","barCode":"1245353456","originalPrice":"36","discount":"0.8","supplyName":"12353"},
+    {"goodsName":"iii","goodsNorms":"500g","goodsUnit":"a","barCode":"12535433456","originalPrice":"366","discount":"0.8","supplyName":"8653533"},
+    {"goodsName":"jjj","goodsNorms":"500g","goodsUnit":"a","barCode":"12345353456","originalPrice":"45","discount":"0.8","supplyName":"3353232"},
+    {"goodsName":"kkk","goodsNorms":"1500g","goodsUnit":"a","barCode":"12535433456","originalPrice":"36","discount":"0.8","supplyName":"213535"},
+    {"goodsName":"lll","goodsNorms":"100","goodsUnit":"a","barCode":"71723456","originalPrice":"36","discount":"0.8","supplyName":"224243"},
+    {"goodsName":"mmm","goodsNorms":"600g","goodsUnit":"a","barCode":"17868623456","originalPrice":"12","discount":"0.8","supplyName":"535335"}
+   ]
+}
